@@ -62,7 +62,6 @@ class MoviesChart extends Component {
 		// ! obj destructuring for state object
 
 		const {movies, currentPage, movie_PerPage, selectedGenre, sortedTable} = this.state;
-console.log("all",movies);
 		// * filtering
 		const filtered_movies =
 			selectedGenre && selectedGenre._id ? movies.filter((eachMovie) => eachMovie.genre._id === selectedGenre._id) : movies;

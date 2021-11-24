@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {getGenres} from "../../services/fakeGenreService";
-import {saveMovie} from "./../../services/fakeMovieService";
+import {getMovie, saveMovie} from "./../../services/fakeMovieService";
 
 class CreateMovie extends Component {
 	state = {
@@ -14,12 +14,35 @@ class CreateMovie extends Component {
 		errors: {},
 	};
 	componentDidMount() {
+		// ** fetch genre
 		const genres = getGenres();
 		this.setState({
 			genres: genres,
 		});
-	}
+		// ** get specific movie for edit
+		const movieId = this.props.match.params.id;
 
+		if (movieId === "new") return;
+
+		const movie = getMovie(movieId);
+
+		// ** replace() will not return to the last page i.e it removes history
+		if (!movie) return this.props.history.replace("/not-found");
+
+
+		//** api data's are general purpose to use according to our requirement need map it and make a suitable model as our requirements
+		// ** this mapping is done by mapToViewModel method
+		this.setState({movie: this.mapToViewModel(movie)});
+	}
+	mapToViewModel(movie) {
+		return {
+			_id: movie._id,
+			title: movie.title,
+			genreId: movie.genre._id,
+			numberInStock: movie.numberInStock,
+			dailyRentalRate: movie.dailyRentalRate,
+		};
+	}
 	handleOnChange(e) {
 		// ** validate input
 		//** update state */
@@ -66,7 +89,7 @@ class CreateMovie extends Component {
 							aria-label="Default select example">
 							<option value="" />
 							{this.state.genres.map((genre) => (
-								<option key={genre._id} value={genre._id}>
+								<option selected key={genre._id} value={genre._id}>
 									{genre.name}
 								</option>
 							))}
@@ -81,7 +104,7 @@ class CreateMovie extends Component {
 							name="numberInStock"
 							type="numberInStock"
 							className="form-control"
-							value={this.state.movie.numberInStock}
+							value={this.state.movie["numberInStock"]}
 						/>
 					</div>
 					{this.state.errors.numberInStock && (

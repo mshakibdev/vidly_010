@@ -17,7 +17,7 @@ class App extends Component {
 				<Nav />
 
 				<Switch>
-					<Route path="/movie/:id" component={MovieForm} />
+					<Route path="/movie/:id" component={CreateMovie} />
 					<Route path="/customer" component={Customer} />
 					<Route path="/rental" component={Rental} />
 					<Route path="/not-found" component={NotFound} />
