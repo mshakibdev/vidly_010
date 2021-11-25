@@ -31,7 +31,7 @@ function MoviesTable(props) {
 				{props.movieList.map((movie) => (
 					<tr key={movie._id}>
 						<td>
-							<Link to={ `/movie/${movie._id}` }>{movie.title}</Link>
+							<Link to={ `/movies/${movie._id}` }>{movie.title}</Link>
 						</td>
 						<td>{movie.genre.name}</td>
 						<td>{movie.numberInStock}</td>
