@@ -6,10 +6,9 @@ import {Redirect, Route, Switch} from "react-router";
 import Customer from "../components/pages/customer";
 import Rental from "../components/pages/rental";
 import NotFound from "../components/pages/not-found";
-import MovieForm from "../components/forms/movieForm";
 import Login from "../components/forms/login";
 import Register from "../components/forms/register";
-import CreateMovie from "./../components/forms/createMovie";
+import MovieForm from "../components/forms/MovieForm";
 class App extends Component {
 	render() {
 		return (
@@ -17,17 +16,17 @@ class App extends Component {
 				<Nav />
 
 				<Switch>
-					<Route path="/movie/:id" component={CreateMovie} />
+					<Route path="/movies/:id" component={MovieForm} />
 					<Route path="/customer" component={Customer} />
 					<Route path="/rental" component={Rental} />
-					<Route path="/not-found" component={NotFound} />
 					<Route exact path="/movies" component={MoviesChart} />
 					<Route path="/login" component={Login} />
 					<Route path="/register" component={Register} />
-					<Route path="/movies/new" component={CreateMovie} />
-					<Redirect exact from="/" to="/movies" />
+
+					<Route path="/not-found" component={NotFound} />
 
 					<Redirect to="/not-found" />
+					<Redirect from="/" exact to="/movies" />
 				</Switch>
 			</div>
 		);

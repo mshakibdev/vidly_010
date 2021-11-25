@@ -91,10 +91,8 @@ class MoviesChart extends Component {
 					</div>
 					<div className="col">
 						<p className="m-4">Showing {total_number_of_movies} movies from the database</p>
-						<Link to="/movies/new">
-							<button type="button" className="btn btn-primary">
-								New Movie
-							</button>
+						<Link to="/movies/new" className="btn btn-primary">
+							New Movie
 						</Link>
 						<MoviesTable
 							onSortTable={this.handleSorting}
