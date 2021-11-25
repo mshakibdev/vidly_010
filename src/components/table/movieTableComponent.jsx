@@ -14,10 +14,13 @@ class MoviesChart extends Component {
 		this.handlePageChange = this.handlePageChange.bind(this);
 		this.handleSelectedGenre = this.handleSelectedGenre.bind(this);
 		this.handleSorting = this.handleSorting.bind(this);
+		this.handleSearch = this.handleSearch.bind(this);
 		this.state = {
 			movies: [],
 			genres: [],
 			movie_PerPage: 3,
+			searchQuery: "",
+			selectedGenre: null,
 			currentPage: 1,
 			sortedTable: {
 				tableHeader: "title",
@@ -45,7 +48,11 @@ class MoviesChart extends Component {
 	}
 
 	handleSelectedGenre(genre) {
-		this.setState({selectedGenre: genre, currentPage: 1});
+		this.setState({selectedGenre: genre, searchQuery: "", currentPage: 1});
+	}
+
+	handleSearch(e) {
+		this.setState({searchQuery: e.currentTarget.value, selectedGenre: null, currentPage: 1});
 	}
 	handleSorting(tableHeader) {
 		this.setState({
@@ -55,16 +62,26 @@ class MoviesChart extends Component {
 			},
 		});
 	}
+
+	handleFiltering() {
+		const {movies, searchQuery, selectedGenre} = this.state;
+		let filtered_movies = movies;
+		if (searchQuery)
+			filtered_movies = movies.filter((m) => m.title.toLowerCase().startsWith(searchQuery.toLowerCase()));
+		else if (selectedGenre && selectedGenre._id)
+			filtered_movies = movies.filter((eachMovie) => eachMovie.genre._id === selectedGenre._id);
+		return  filtered_movies ;
+	}
+
 	render() {
 		//*? / const {length: number_of_movies} = this.state.movies;
 		// * "number_of_movies" not more necessary because below  "updated_movie_list" is use instead of it !
 
 		// ! obj destructuring for state object
 
-		const {movies, currentPage, movie_PerPage, selectedGenre, sortedTable} = this.state;
+		const {currentPage, movie_PerPage, sortedTable} = this.state;
 		// * filtering
-		const filtered_movies =
-			selectedGenre && selectedGenre._id ? movies.filter((eachMovie) => eachMovie.genre._id === selectedGenre._id) : movies;
+		let filtered_movies = this.handleFiltering();
 
 		//* total movies
 		const total_number_of_movies = filtered_movies.length;
@@ -75,10 +92,11 @@ class MoviesChart extends Component {
 
 		// * paginating
 		const paginated_movies = paginate(ordered_movies, currentPage, movie_PerPage);
-
+	
 		if (total_number_of_movies === 0) {
 			return <p className="m-4">There are no movies in the database</p>;
 		}
+		console.log("lo", this.state.searchQuery);
 		return (
 			<main className="container pt-20">
 				<div className="row">
@@ -90,10 +108,18 @@ class MoviesChart extends Component {
 						/>
 					</div>
 					<div className="col">
-						<p className="m-4">Showing {total_number_of_movies} movies from the database</p>
 						<Link to="/movies/new" className="btn btn-primary">
 							New Movie
 						</Link>
+						<p className="m-4">Showing {total_number_of_movies} movies from the database</p>
+						<input
+							type="text"
+							name="query"
+							className="form-control my-3"
+							placeholder="Search..."
+							value={this.state.searchQuery}
+							onChange={this.handleSearch}
+						/>
 						<MoviesTable
 							onSortTable={this.handleSorting}
 							movieList={paginated_movies}
