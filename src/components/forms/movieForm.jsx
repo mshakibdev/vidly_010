@@ -3,6 +3,7 @@ import {getGenres} from "../../services/genreService";
 import {getMovie, saveMovie} from "../../services/movieService";
 
 class MovieForm extends Component {
+	// state
 	state = {
 		movie: {
 			title: "",
