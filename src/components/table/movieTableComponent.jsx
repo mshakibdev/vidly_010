@@ -3,7 +3,7 @@ import {getMovies} from "../../services/fakeMovieService";
 import Pagination from "../common/pagination";
 import {paginate} from "../../util/paginate";
 import Genre from "../common/genreList";
-import {getGenres} from "../../services/fakeGenreService";
+import {getGenres} from "../../services/genreService";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
 import {Link} from "react-router-dom";
@@ -28,9 +28,12 @@ class MoviesChart extends Component {
 			},
 		};
 	}
-	componentDidMount() {
+	async componentDidMount() {
+		let all_genre = await getGenres();
+
 		//used for async vibe we can use state directly
-		const genres = [{name: "All Genres", _id: ""}, ...getGenres()];
+		const genres = await [{name: "All Genres", _id: ""}, ...all_genre.data];
+
 		this.setState({
 			movies: getMovies(),
 			genres: genres,
@@ -66,11 +69,9 @@ class MoviesChart extends Component {
 	handleFiltering() {
 		const {movies, searchQuery, selectedGenre} = this.state;
 		let filtered_movies = movies;
-		if (searchQuery)
-			filtered_movies = movies.filter((m) => m.title.toLowerCase().startsWith(searchQuery.toLowerCase()));
-		else if (selectedGenre && selectedGenre._id)
-			filtered_movies = movies.filter((eachMovie) => eachMovie.genre._id === selectedGenre._id);
-		return  filtered_movies ;
+		if (searchQuery) filtered_movies = movies.filter((m) => m.title.toLowerCase().startsWith(searchQuery.toLowerCase()));
+		else if (selectedGenre && selectedGenre._id) filtered_movies = movies.filter((eachMovie) => eachMovie.genre._id === selectedGenre._id);
+		return filtered_movies;
 	}
 
 	render() {
@@ -92,7 +93,7 @@ class MoviesChart extends Component {
 
 		// * paginating
 		const paginated_movies = paginate(ordered_movies, currentPage, movie_PerPage);
-	
+
 		if (total_number_of_movies === 0) {
 			return <p className="m-4">There are no movies in the database</p>;
 		}
