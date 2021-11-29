@@ -8,7 +8,7 @@ import Rental from "../components/pages/rental";
 import NotFound from "../components/pages/not-found";
 import Login from "../components/forms/login";
 import Register from "../components/forms/register";
-import MovieForm from "../components/forms/MovieForm";
+import MovieForm from "../components/forms/movieForm";
 class App extends Component {
 	render() {
 		return (
