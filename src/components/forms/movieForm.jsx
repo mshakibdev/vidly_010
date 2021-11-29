@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import {getGenres} from "../../services/fakeGenreService";
-import {getMovie, saveMovie} from "../../services/fakeMovieService";
+import {getGenres} from "../../services/genreService";
+import {getMovie, saveMovie} from "../../services/movieService";
 
 class MovieForm extends Component {
 	state = {
@@ -10,29 +10,36 @@ class MovieForm extends Component {
 			numberInStock: "",
 			dailyRentalRate: "",
 		},
+
 		genres: [],
 		errors: {},
 	};
-	componentDidMount() {
+	async componentDidMount() {
 		// ** fetch genre
-		const genres = getGenres();
+		const {data: genres} = await getGenres();
 		this.setState({
-			genres: genres,
+			genres,
 		});
 		// ** get specific movie for edit
 		const movieId = this.props.match.params.id;
 
 		if (movieId === "new") return;
 
-		const movie = getMovie(movieId);
+	
 
-		// ** replace() will not return to the last page i.e it removes history
-		if (!movie) return this.props.history.replace("/not-found");
-
-
-		//** api data's are general purpose to use according to our requirement need map it and make a suitable model as our requirements
-		// ** this mapping is done by mapToViewModel method
-		this.setState({movie: this.mapToViewModel(movie)});
+		try {
+			const {data: movie} = await getMovie(movieId);
+			// let x = genres.filter((genre) => genre._id === movie.genreId);
+			//** api data's are general purpose to use according to our requirement need map it and make a suitable model as our requirements
+			// ** this mapping is done by mapToViewModel method
+			this.setState({movie: this.mapToViewModel(movie)});
+		} catch (ex) {
+		
+			if (ex.response && ex.response.status === 404) {
+				// ** replace() will not return to the last page i.e it removes history
+				this.props.history.replace("/not-found");
+			}
+		}
 	}
 	mapToViewModel(movie) {
 		return {
@@ -87,9 +94,9 @@ class MovieForm extends Component {
 							onChange={(event) => this.handleOnChange(event)}
 							className="form-control form-select"
 							aria-label="Default select example">
-							<option value="" />
+							
 							{this.state.genres.map((genre) => (
-								<option selected key={genre._id} value={genre._id}>
+								<option key={genre._id} value={genre._id}>
 									{genre.name}
 								</option>
 							))}

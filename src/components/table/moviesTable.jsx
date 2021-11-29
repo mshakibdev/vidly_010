@@ -3,7 +3,7 @@ import Like from "../common/like";
 import {Link} from "react-router-dom";
 
 function MoviesTable(props) {
-	console.log("mov",props.movieList);
+	
 	return (
 	
 			<table className="table m-4">
