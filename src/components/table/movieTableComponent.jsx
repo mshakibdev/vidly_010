@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import {getMovies} from "../../services/movieService";
+import {getMovies} from "../../services/fakeMovieService";
 import Pagination from "../common/pagination";
 import {paginate} from "../../util/paginate";
 import Genre from "../common/genreList";
-import {getGenres} from "../../services/genreService";
+import {getGenres} from "../../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
 import {Link} from "react-router-dom";
@@ -28,16 +28,16 @@ class MoviesChart extends Component {
 			},
 		};
 	}
-	async componentDidMount() {
-		let genreApiObject =await getGenres();
-		let movieApiObject = await getMovies();
+	componentDidMount() {
+		let genreApiObject = getGenres();
+		let movieApiObject =  getMovies();
 
 		console.log("pai", movieApiObject);
 		//used for async vibe we can use state directly
-		const genres = await [{name: "All Genres", _id: ""}, ...genreApiObject.data];
+		const genres =  [{name: "All Genres", _id: ""}, ...genreApiObject];
 
 		this.setState({
-			movies: movieApiObject.data,
+			movies: movieApiObject,
 			genres: genres,
 		});
 	}

@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import {getGenres} from "../../services/genreService";
-import {getMovie, saveMovie} from "../../services/movieService";
+import {getGenres} from "../../services/fakeGenreService";
+import {getMovie, saveMovie} from "../../services/fakeMovieService";
 
 class MovieForm extends Component {
 	state = {
@@ -14,9 +14,9 @@ class MovieForm extends Component {
 		genres: [],
 		errors: {},
 	};
-	async componentDidMount() {
+	componentDidMount() {
 		// ** fetch genre
-		const {data: genres} = await getGenres();
+		const genres = getGenres();
 		this.setState({
 			genres,
 		});
@@ -25,16 +25,13 @@ class MovieForm extends Component {
 
 		if (movieId === "new") return;
 
-	
-
 		try {
-			const {data: movie} = await getMovie(movieId);
+			const movie = getMovie(movieId);
 			// let x = genres.filter((genre) => genre._id === movie.genreId);
 			//** api data's are general purpose to use according to our requirement need map it and make a suitable model as our requirements
 			// ** this mapping is done by mapToViewModel method
 			this.setState({movie: this.mapToViewModel(movie)});
 		} catch (ex) {
-		
 			if (ex.response && ex.response.status === 404) {
 				// ** replace() will not return to the last page i.e it removes history
 				this.props.history.replace("/not-found");
@@ -94,9 +91,9 @@ class MovieForm extends Component {
 							onChange={(event) => this.handleOnChange(event)}
 							className="form-control form-select"
 							aria-label="Default select example">
-							
+							console.log(this.state.genres);
 							{this.state.genres.map((genre) => (
-								<option key={genre._id} value={genre._id}>
+								<option selected key={genre._id} value={genre._id}>
 									{genre.name}
 								</option>
 							))}
